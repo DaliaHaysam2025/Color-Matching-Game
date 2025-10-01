@@ -2,6 +2,7 @@ import tkinter as tk #مكتبة انشاء الواجهات الرسومية ف
 import random #هذه المكتبة تتيح اختيار أرقام عشوائيةواختيار عناصر بشكل عشوائي
 import time # هذه المكتبة تتيح تأخير تنفيذ الكود أو حتى الحصول على الوقت الحالي
 import os # هذه المكتبة تتعامل مع نظام التشغيل مباشرة مثل انشاء مجلد
+import pygame # مكتبة الأصوات والموسيقى
 # او قراءة محتوياته أو حذفه كما تتعامل مع الملفات والمسارات
 
 
@@ -29,10 +30,14 @@ class ColorGame:
         self.remaining_time = MAX_TIME # الوقت المسموح به في كل مستوى
         self.cards_frame = None # هذا الاطار يحتوى على بطاقات الألوان
         self.high_score = self.load_high_score() #لتحميل أعلى نتيجة مسجلة
+        pygame.mixer.init()
+        self.click_sound = pygame.mixer.Sound("click.mp3")
 
         #اعدادات الواجهة الرسومية
         self.top_frame = tk.Frame(root, pady=10) # انشاء الاطار العلوي الذي يحتوي على المؤقت و رقم المستوى
         self.top_frame.pack(side="top", pady=10) # تحديد موقع الاطار العلوي
+
+
         self.middle_frame = tk.Frame(root) # انشاء الاطار الاوسط الذي يحتوي على بطاقات اللعب
         self.middle_frame.pack(expand=True) # هذا الاطار قابل للتوسيع لأن عدد بطاقات الألوان تزداد مع كل مستوى
         self.bottom_frame = tk.Frame(root) # انشاء الاطار السفلي الخاص بأزرار إعادة اللعبة والخروج منها
@@ -56,11 +61,10 @@ class ColorGame:
         # الأوسط مما قد يتسبب بإزاحة مكوناته و حتى خروجها عن الواجهة
         self.game_frame = tk.Frame(self.middle_frame)
         self.result_frame = tk.Frame(self.middle_frame)
-        self.start_button = tk.Button(self.bottom_frame, text="   ابدأ اللعبة   ", command=self.start_game, bg="green", font=("Arial", 30))
-        self.start_button.pack(pady=300)
-        self.exit_button = tk.Button(self.bottom_frame, text="خروج من اللعبة", command=self.root.quit, font=("Arial", 14), bg="red", fg="white")
+        self.start_button = tk.Button(self.bottom_frame, text="   ابدأ اللعبة    ", command=self.start_game, bg="green", font=("Arial", 16))
+        self.start_button.pack(pady=10)
+        self.exit_button = tk.Button(self.bottom_frame, text=" خروج من اللعبة ", command=self.root.quit, font=("Arial", 14), bg="red", fg="white")
         self.exit_button.pack(pady=5)
-
 
         # تحميل أعلى نتيجة لتخزينها في ملف highscore.txt
     def load_high_score(self):
@@ -167,6 +171,12 @@ class ColorGame:
 #-----------------------------------------------
 #هذه الدالة المسؤولة عن فحص اختيارات اللاعب
     def check_choice(self, is_correct):
+        #  تشغيل صوت الضغط
+        try:
+            pygame.mixer.Sound("click.mp3").play()
+        except Exception as e:
+            print(f"خطأ في تشغيل صوت الضغط: {e}")
+
         if self.timer_id: # نوقف المؤقت اذا اختار اللاعب البطاقة
             self.root.after_cancel(self.timer_id)
         if is_correct: # إذا كانت البطاقة صحيحة تحدث الاجراءات التالية
@@ -195,10 +205,21 @@ class ColorGame:
         self.status_label.config(text="")
         self.total_score_label.config(text="")
 
+        if self.score > self.high_score:
+            self.high_score = self.score
+            self.high_score_label.config(text=f"أعلى نتيجة: {self.high_score}")
+            self.save_high_score()
+
+            # ✅ تشغيل صوت الفوز
+            try:
+                pygame.mixer.Sound("win.mp3").play()
+            except Exception as e:
+                print(f"خطأ في تشغيل صوت الفوز: {e}")
+
         # إذا كانت النتيجة الحالية أعلى نتيجة حصلت عليها يتم تخزينها في ملف highscore.txt
         if self.score > self.high_score:
             self.high_score = self.score
-            self.high_score_label.config(text=f" أعلى نتيجة:  {self.high_score} ")
+            self.high_score_label.config(text=f"أعلى نتيجة: {self.high_score}")
             self.save_high_score()
 
         self.game_frame.pack_forget() # اخفاء واجهة اللعب
@@ -213,8 +234,8 @@ class ColorGame:
         result_inner = tk.Frame(
             shadow,
             bg="#131f4c", # لون كحلي لمربع النص
-            padx=100, # عرض مربع النص
-            pady=40, # طوله
+            padx=200, # عرض مربع النص
+            pady=100, # طوله
             bd=4,
             relief="raised",
             highlightbackground="#1a2f4f",
@@ -226,6 +247,15 @@ class ColorGame:
         label_text.pack()
         score_value = tk.Label(result_inner, text=f"{self.score} ",font=("Arial", 24, "bold"), fg="red", bg="#131f4c")
         score_value.pack()
+        if self.score >= self.high_score:
+            congrats_label = tk.Label(
+                result_inner,
+                text="🎉 مبروك لقد حققت رقماً قياسياً جديداً! 🎉",
+                font=("Arial", 14, "bold"),
+                fg="gold",
+                bg="#131f4c"
+            )
+            congrats_label.pack(pady=(10, 0))
 
         # نص صغير باللون الذهبي يشرح كيف تم احتساب عدد النقاط
         explanation_label = tk.Label(
@@ -258,7 +288,7 @@ class ColorGame:
         self.start_button.pack(pady=15)
 
 
-#----------------------------------------------------------------------
+    #----------------------------------------------------------------------
 #هذه الدالة تنظف جميع عناصر اللعبة لتعرض النتائج
     def clear_frame(self):
         if self.cards_frame:
