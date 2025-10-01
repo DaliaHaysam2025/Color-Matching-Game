@@ -56,7 +56,7 @@ class ColorGame:
         # الأوسط مما قد يتسبب بإزاحة مكوناته و حتى خروجها عن الواجهة
         self.game_frame = tk.Frame(self.middle_frame)
         self.result_frame = tk.Frame(self.middle_frame)
-        self.start_button = tk.Button(self.bottom_frame, text="ابدأ اللعبة", command=self.start_game, font=("Arial", 16))
+        self.start_button = tk.Button(self.bottom_frame, text="ابدأ اللعبة", command=self.start_game, bg="green", font=("Arial", 16))
         self.start_button.pack(pady=10)
         self.exit_button = tk.Button(self.bottom_frame, text="خروج من اللعبة", command=self.root.quit, font=("Arial", 14), bg="red", fg="white")
         self.exit_button.pack(pady=5)
@@ -213,8 +213,8 @@ class ColorGame:
         result_inner = tk.Frame(
             shadow,
             bg="#131f4c", # لون كحلي لمربع النص
-            padx=30, # عرض مربع النص
-            pady=20, # طوله
+            padx=100, # عرض مربع النص
+            pady=40, # طوله
             bd=4,
             relief="raised",
             highlightbackground="#1a2f4f",
@@ -222,9 +222,9 @@ class ColorGame:
         )
         result_inner.pack(padx=6, pady=6)
 
-        label_text = tk.Label(result_inner, text=": عدد النقاط الحاصل عليها ",font=("Arial", 20), fg="#FFD700", bg="#2d4f7c")
+        label_text = tk.Label(result_inner, text=": عدد النقاط الحاصل عليها ",font=("Arial", 20), fg="#FFD700", bg="#131f4c")
         label_text.pack()
-        score_value = tk.Label(result_inner, text=f"{self.score} ",font=("Arial", 24, "bold"), fg="red", bg="#2d4f7c")
+        score_value = tk.Label(result_inner, text=f"{self.score} ",font=("Arial", 24, "bold"), fg="red", bg="#131f4c")
         score_value.pack()
 
         # نص صغير باللون الذهبي يشرح كيف تم احتساب عدد النقاط
@@ -233,7 +233,7 @@ class ColorGame:
             text="تحتسب عدد النقاط بضرب عدد الثواني المتبقية بكل مستوى في رقم المستوى",
             font=("Arial", 8),
             fg="#f0e68c",
-            bg="#2d4f7c",
+            bg="#131f4c",
             wraplength=600,
             justify="center"
         )
@@ -245,7 +245,7 @@ class ColorGame:
             text=f"عدد المستويات التي اجتزتها : {self.level - 1}",
             font=("Arial", 16),
             fg="#FFD700",
-            bg="#2d4f7c"
+            bg="#131f4c"
         )
         level_label.pack()
         self.start_button.config(
