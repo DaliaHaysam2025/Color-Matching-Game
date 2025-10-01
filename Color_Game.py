@@ -56,9 +56,9 @@ class ColorGame:
         # الأوسط مما قد يتسبب بإزاحة مكوناته و حتى خروجها عن الواجهة
         self.game_frame = tk.Frame(self.middle_frame)
         self.result_frame = tk.Frame(self.middle_frame)
-        self.start_button = tk.Button(self.bottom_frame, text="ابدأ اللعبة", command=self.start_game, bg="green", font=("Arial", 16))
+        self.start_button = tk.Button(self.bottom_frame, text="   ابدأ اللعبة    ", command=self.start_game, bg="green", font=("Arial", 16))
         self.start_button.pack(pady=10)
-        self.exit_button = tk.Button(self.bottom_frame, text="خروج من اللعبة", command=self.root.quit, font=("Arial", 14), bg="red", fg="white")
+        self.exit_button = tk.Button(self.bottom_frame, text=" خروج من اللعبة ", command=self.root.quit, font=("Arial", 14), bg="red", fg="white")
         self.exit_button.pack(pady=5)
 
 
@@ -213,8 +213,8 @@ class ColorGame:
         result_inner = tk.Frame(
             shadow,
             bg="#131f4c", # لون كحلي لمربع النص
-            padx=100, # عرض مربع النص
-            pady=40, # طوله
+            padx=200, # عرض مربع النص
+            pady=100, # طوله
             bd=4,
             relief="raised",
             highlightbackground="#1a2f4f",
